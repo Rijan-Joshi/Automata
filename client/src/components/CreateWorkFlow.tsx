@@ -11,6 +11,7 @@ import {
   type Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { TriggerSelect } from "./TriggerSelect";
 
 /* 
 Todo
@@ -20,15 +21,19 @@ Todo
 
 
 */
+export type metaData = any;
+export type NodeLabel = "action" | "trigger";
+export type NodeKind =
+  | "price-trigger"
+  | "timer-trigger"
+  | "hyperliquid"
+  | "backpack"
+  | "lighter";
 
 interface NodeData extends Record<string, unknown> {
-  label: "action" | "trigger";
-  kind:
-    | "price-trigger"
-    | "timer-trigger"
-    | "hyperliquid"
-    | "backpack"
-    | "lighter";
+  label: NodeLabel;
+  kind: NodeKind;
+  metadata: metaData;
 }
 
 type NodeType = Node<NodeData>;
@@ -59,6 +64,21 @@ export default function CreateWorkFlow() {
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
+      <TriggerSelect
+        onSelect={(kind, metaData) => {
+          const newNode: NodeType = {
+            id: `node-${Math.random().toString(36).slice(2, 9)}`,
+            position: { x: 0, y: 0 },
+            data: {
+              label: "trigger",
+              kind,
+              metadata: metaData,
+            },
+          };
+          setNodes([...nodes, newNode]);
+        }}
+      />
+
       <ReactFlow
         nodes={nodes}
         edges={edges}
