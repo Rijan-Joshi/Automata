@@ -7,22 +7,43 @@ import {
   type NodeChange,
   type EdgeChange,
   type Connection,
+  type Node,
+  type Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-const initialNodes = [
-  { id: "n1", position: { x: 0, y: 0 }, data: { label: "Node 1" } },
-  { id: "n2", position: { x: 0, y: 100 }, data: { label: "Node 2" } },
-];
-const initialEdges = [{ id: "n1-n2", source: "n1", target: "n2" }];
+/* 
+Todo
+1. Create a interface for the nodeType
+2. Create a interface for the edge 
+3. Use shadcn to create the UI
+
+
+*/
+
+interface NodeData extends Record<string, unknown> {
+  label: "action" | "trigger";
+  kind:
+    | "price-trigger"
+    | "timer-trigger"
+    | "hyperliquid"
+    | "backpack"
+    | "lighter";
+}
+
+type NodeType = Node<NodeData>;
+type EdgeType = Edge;
 
 export default function CreateWorkFlow() {
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+  const [nodes, setNodes] = useState<NodeType[]>([]);
+  const [edges, setEdges] = useState<EdgeType[]>([]);
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) =>
-      setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
+      setNodes(
+        (nodesSnapshot) =>
+          applyNodeChanges(changes, nodesSnapshot) as NodeType[]
+      ),
     []
   );
   const onEdgesChange = useCallback(
